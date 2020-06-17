@@ -1,8 +1,8 @@
 package covid;
 
-import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="Kit_table")
@@ -15,22 +15,15 @@ public class Kit {
     private Long qty;
     private String type;
 
-    @PostPersist
-    public void onPostPersist(){
-        KitRegistered kitRegistered = new KitRegistered();
-        BeanUtils.copyProperties(this, kitRegistered);
-        kitRegistered.publishAfterCommit();
-
-
-    }
-
     @PostUpdate
     public void onPostUpdate(){
-        KitChecked kitChecked = new KitChecked();
-        BeanUtils.copyProperties(this, kitChecked);
-        kitChecked.publishAfterCommit();
+        if (this.qty < 100){
+            KitChecked kitChecked = new KitChecked();
+            BeanUtils.copyProperties(this, kitChecked);
 
-
+            kitChecked.setQty(100L);
+            kitChecked.publishAfterCommit();
+        }
     }
 
 

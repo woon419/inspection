@@ -1,8 +1,8 @@
 package covid;
 
-import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="Inspection_table")
@@ -19,13 +19,22 @@ public class Inspection {
 
     @PostUpdate
     public void onPostUpdate(){
+
+
         Inspected inspected = new Inspected();
         BeanUtils.copyProperties(this, inspected);
         inspected.publishAfterCommit();
-
-
     }
 
+    public Inspection(Reserved reserved){
+        this.reservationId = reserved.getId();
+        this.centerId = reserved.getCenterId();
+        this.status = "RESERVED";
+    }
+
+    public Inspection(){
+        super();
+    }
 
     public Long getId() {
         return id;
